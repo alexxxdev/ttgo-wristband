@@ -10,6 +10,7 @@ EventHandler* _eh = nullptr;
 AppManager* _am = nullptr;
 
 void setup() {
+  Serial.begin(115200);
   _hwm = new HardwareManager();
   _dm = new DisplayManager();
   _eh = new EventHandler();

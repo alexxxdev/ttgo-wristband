@@ -4,16 +4,51 @@ AppManager::AppManager(DisplayManager* dm, EventHandler* eh, HardwareManager* hw
     _tft = _dm->getDisplay();
     _offscreen = new TFT_eSprite(_tft);
     _offscreen->createSprite(_tft->width(), _tft->height());
-    
+    _offscreen->fillSprite(TFT_OLIVE);
+
     if (SPIFFS.exists(FONT_TIME_PATH)) {
         hasFontTime = true;
     }
     if (SPIFFS.exists(FONT_SIZE_16_PATH)) {
         hasFontSize16 = true;
+    }    
+}
+
+void AppManager::handleLoop(){    
+     switch (mode) {
+        case SCREEN_TIME:
+            showTimeScreen();
+            break;
+        case SCREEN_OTA:
+            showOTAScreen();
+            break;
+    }
+    if(_offscreen != nullptr) {
+        _offscreen->pushSprite(0, 0);
     }
 }
 
-void AppManager::handleLoop(){
+void AppManager::checkEvents(){
+    if(_eh->isButtonJustReleased()){
+        switchToNextMode();
+    }
+}
+
+void AppManager::switchToNextMode(){
+    mode++;
+    mode = mode >= NUM_MODES ? 0 : mode;
+    Serial.printf("\nswitchToNextMode %d", mode);
+    switch (mode) {
+        case SCREEN_TIME:
+            _offscreen->fillSprite(TFT_BLACK);
+            break;
+        case SCREEN_OTA:
+            _offscreen->fillSprite(TFT_BLUE);
+            break;
+    }    
+}
+
+void AppManager::showTimeScreen(){
     RTC_Date now = _hwm->getCurrentTime();
     float v = _hwm->getVoltage();
     uint8_t percentage = _hwm->calcBatteryPercentage(v);
@@ -49,18 +84,8 @@ void AppManager::handleLoop(){
     if (hasFontSize16) {
         _offscreen->unloadFont();
     }
-    
-    if(_offscreen != nullptr) {
-        _offscreen->pushSprite(0, 0);
-    }
 }
 
-void AppManager::checkEvents(){
-    if(_eh->isButtonJustReleased()){
-        switchToNextMode();
-    }
-}
-
-void AppManager::switchToNextMode(){
-    
+void AppManager::showOTAScreen(){
+    _offscreen->drawString("test", 0, 64);
 }
