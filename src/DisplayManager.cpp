@@ -4,6 +4,7 @@ DisplayManager::DisplayManager() {
     setFrameRate(60);
     frameCount = 0;
     nextFrameStart = 0;
+    lastFrameStart = 0;
     post_render = false;
 
     _tft->init();

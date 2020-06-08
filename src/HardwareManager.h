@@ -4,7 +4,6 @@
 #include "pins.h"
 #include <esp32-hal-cpu.h>
 #include <esp_adc_cal.h>
-#include <WiFi.h>
 #include <Arduino.h>
 #include <pcf8563.h>
 #include "SPIFFS.h"

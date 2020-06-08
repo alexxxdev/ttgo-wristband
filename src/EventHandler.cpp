@@ -13,6 +13,9 @@ EventHandler::EventHandler() {
 void EventHandler::poll(){
     lastPressed = isPressed;
     isPressed = gpio_get_level(GPIO_NUM_33);
+    if(isButtonJustPressed()){
+        _lastEventAt = millis();
+    }
 }
 
 bool EventHandler::isButtonPressed() {
@@ -25,4 +28,8 @@ bool EventHandler::timeoutForSleepReached() {
 
 bool EventHandler::isButtonJustReleased() {
     return lastPressed && !isPressed;
+}
+
+bool EventHandler::isButtonJustPressed() {
+    return !lastPressed && isPressed;
 }

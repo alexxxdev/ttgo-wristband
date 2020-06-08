@@ -11,6 +11,7 @@ class EventHandler{
         bool isButtonPressed();
         bool timeoutForSleepReached();
         bool isButtonJustReleased();
+        bool isButtonJustPressed();
     private:
         // go to sleep after 10 seconds (if allowed)
         const uint16_t _MAX_TIMEOUT = 5000;

@@ -6,16 +6,10 @@ HardwareManager::HardwareManager() {
 
 void HardwareManager::initRL1() {
     if(_runLevel != RL0){
-        //log_w("Can't initialise RunLevel 1 (%d)", _runLevel);
         return;
     }
 
-    //log_i("Moving up to RunLevel 1");
     setCpuFrequencyMhz(80);
-
-    //log_i("CPU speed is %d", getCpuFrequencyMhz());
-
-    //log_i("CPU reset codes. CPU0: %d, CPU1: %d", rtc_get_reset_reason(0), rtc_get_reset_reason(1));
 
     initClock();
     setupADC();
@@ -28,11 +22,10 @@ void HardwareManager::initRL1() {
 
 void HardwareManager::initRL2() {
     if(_runLevel != RL1){
-        //log_w("Can't initialise RunLevel 2 (%d)", _runLevel);
         return;
     }
 
-    log_i("Moving up to RunLevel 2");
+    setCpuFrequencyMhz(160);
 
     _runLevel = RL2;
 }
@@ -62,8 +55,7 @@ void HardwareManager::setupADC() {
             (adc_bits_width_t)ADC_WIDTH_BIT_12,
             1100,
             &adc_chars);
-    if (val_type == ESP_ADC_CAL_VAL_EFUSE_VREF)
-    {
+    if (val_type == ESP_ADC_CAL_VAL_EFUSE_VREF){
         _vref = adc_chars.vref;
     }
 }
@@ -134,19 +126,17 @@ void HardwareManager::rtcSleep(){
 float HardwareManager::getVoltage() {
     uint16_t v = analogRead(BATT_ADC_PIN);
 
-    // Todo fixme
     float battery_voltage = ((float)v / 4095.0) * 2.0 * 3.3 * (_vref / 1000.0);
 
     return battery_voltage;
 }
 
 uint8_t HardwareManager::calcBatteryPercentage(float volts) {
-    // Todo fixme
     float percentage = (volts - _BATTERY_MIN_V) * 100 / (_BATTERY_MAX_V - _BATTERY_MIN_V);
-    if (percentage > 100)    {
+    if (percentage > 100){
         percentage = 100;
     }
-    if (percentage < 0)    {
+    if (percentage < 0){
         percentage = 0;
     }
     return percentage;
